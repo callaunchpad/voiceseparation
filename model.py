@@ -28,12 +28,27 @@ def make_rnn(hparams, X_mixture):
 
 def make_net(hparams, X_mixture):
 	if hparams.model_name == "RNN":
-		output_mask = make_rnn(hparams, X_mixture)
+		outputs = make_rnn(hparams, X_mixture)
 	elif hparams.model_name == "AE":
-		output_mask = make_ae(hparams, X_mixture)
+		outputs = make_ae(hparams, X_mixture)
 	else:
 		raise Exception("Unrecognized model name in hyperparameters.")
-	return output_mask
+	return make_mask(hparams, outputs)
+
+def make_mask(hparams, rnn_states):
+	batch_size, time_steps, hidden_state_size = rnn_states.shape[0], rnn_states.shape[1], rnn_states.shape[2]
+	rnn_states = tf.reshape(rnn_states, [batch_size * time_steps, hidden_state_size])
+
+	fft_bins = hparams.frame_length // 2 + 1
+	output = rnn_states
+	for l in range(hparams.num_fc_layers):
+		l_output_size = hparams.fc_layer_size if l != hparams.num_fc_layers - 1 else fft_bins
+		output = tf.contrib.layers.linear(rnn_states, l_output_size)
+		if l != hparams.num_fc_layers - 1:
+		  output = tf.nn.relu(output)
+
+	pre_mask = tf.reshape(output, [batch_size, time_steps, fft_bins])
+	return tf.nn.sigmoid(pre_mask)
 
 # Optimizer function
 def create_optimizer(hparams, loss):
@@ -49,6 +64,7 @@ def create_optimizer(hparams, loss):
 
 	variables = tf.trainable_variables()
 	gradients = tf.gradients(loss, variables)
+
 	if hparams.clip_gradient > -1:
 		gradients = [None if gradient is None else 
 					 tf.clip_by_norm(gradient, hparams.clip_gradient) for gradient in gradients]
@@ -83,7 +99,7 @@ def build_graph(hparams):
 
 	# Get vocals and instrumentals estimate from mask
 	X_vocals_estimate = output_mask * X_mixture
-	X_instrumentals_estimate = (tf.ones(instrumentals_shape) - output_mask) * X_mixture
+	X_instrumentals_estimate = (tf.ones(output_mask.shape) - output_mask) * X_mixture
 
 	# Loss
 	loss = tf.reduce_mean(tf.square(X_vocals - X_vocals_estimate) + tf.square(X_instrumentals - X_instrumentals_estimate))

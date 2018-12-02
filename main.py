@@ -13,6 +13,7 @@ def main():
 	print("Model: %s" % hparams.model_name)
 	print("Optimizer: %s" % hparams.optimizer_name)
 	print("Data directory: %s" % hparams.data_dir)
+	print("Log directory: %s" % hparams.log_dir)
 
 	inputs, loss, train_op = model.build_graph(hparams)
 	train.run_train(hparams, inputs, loss, train_op)
