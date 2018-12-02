@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import time
+from os import listdir, makedirs
 
 from loader import Loader
 
@@ -50,9 +51,10 @@ def run_train(hparams, inputs, loss, train_op):
 		# train_writer, eval_writer = setup(hparams, sess, saver)
 		# log_hparams(hparams, train_writer)
 		sess.run(tf.global_variables_initializer())
-
-		with open(hparams.log_file_simple, 'a+') as f:
+		with open(hparams.log_file_train, 'a+') as f:
 			f.write('\n**************** NEW TRAIN SESSION ****************\n')
+		with open(hparams.log_file_val, 'a+') as f:
+			f.write('\n**************** NEW VALIDATION SESSION ****************\n')
 
 		start = time.time()
 		n_evals = 1
@@ -70,19 +72,22 @@ def run_train(hparams, inputs, loss, train_op):
 			# Print loss per time step
 			if step % hparams.print_loss_frequency == 0:
 				print ('%d (%d %d%%) Loss: %.8f' % (time.time() - start, step, float(step) / hparams.max_steps * 100, raw_loss))
-				with open(hparams.log_file_simple, 'a+') as f:
+				with open(hparams.log_file_train, 'a+') as f:
 					f.write('%d (%d %d%%) Loss: %.8f\n' % (time.time() - start, step, float(step) / hparams.max_steps * 100, raw_loss))
 
 			# Run Eval
-			if step % hparams.eval_loss_frequency == 0:
-				feed_dict_eval = make_feed_dict(loader, inputs, val = True)
-				result = sess.run(loss, feed_dict = feed_dict_eval)
+			if step % hparams.val_loss_frequency == 0:
+				feed_dict_val = make_feed_dict(loader, inputs, val = True)
+				result = sess.run(loss, feed_dict = feed_dict_val)
 				raw_loss = result
+				with open(hparams.log_file_val, 'a+') as f:
+					f.write('%d (%d %d%%) Loss: %.8f\n' % (time.time() - start, step, float(step) / hparams.max_steps * 100, raw_loss))
 				n_evals += 1
 
 			if step > 10 and (time.time() - start) // hparams.save_model_interval >= n_saves:
-				print ("Saving Model")
-				saver.save(sess, hparams.save_dir + ('/%s/' % str(step)), step)
+				print("Saving Model")
+				makedirs('./' + hparams.save_dir + ('%s/' % str(step)))
+				saver.save(sess, './' + hparams.save_dir + ('%s/' % str(step)), step)
 				n_saves += 1
 
 			# train_writer.flush()

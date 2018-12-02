@@ -8,7 +8,8 @@ hparams = tf.contrib.training.HParams(
 
 	# Logging Parameters
 	log_dir = "logs/",
-	log_file_simple = "logs/loss_mir1k.txt",
+	log_file_train = "logs/loss_mir1k_train.txt",
+	log_file_val = "logs/loss_mir1k_val.txt",
 
 	# Data Parameters
 	# data_dir = "audio/",
@@ -47,10 +48,10 @@ hparams = tf.contrib.training.HParams(
 	learning_rate = 10e-4,
 	batch_size = 32,
 	optimizer_name = "RMSProp",
-	eval_loss_frequency = 8,
+	val_loss_frequency = 8,
 
 	print_loss_frequency = 20,
-	save_model_interval = 60,
+	save_model_interval = 600,
 	save_dir = "checkpoints/",
 
 	)
