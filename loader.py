@@ -11,7 +11,7 @@ def snr_to_weight(snr):
 def simulate_mixture(hparams, vocals, instrumentals):
 	snr = hparams.max_input_snr * np.random.random()
 	snrs = [snr, -snr]
-	random.shuffle(snrs)  
+	random.shuffle(snrs)
 
 	vocals = snr_to_weight(snrs[0]) * vocals
 	instrumentals = snr_to_weight(snrs[1]) * instrumentals
@@ -55,6 +55,3 @@ class Loader(object):
 			data_names.append(audio_name)
 
 		return vocals, instrumentals, mixture, data_names
-
-
-		

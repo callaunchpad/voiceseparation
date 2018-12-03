@@ -6,26 +6,12 @@ from os.path import isfile, join
 
 audio_path = './audio/'
 song_names = listdir(audio_path)[1:] #list of directories of song names
-print(song_names)
-#song_name = 'Ojebokoren_ThatsEntertainment_Full'
-#song_name = song_name.lower()
+
 vocal_keyword = 'vox'
 
-#track_dir_path = audio_path + song_name
-#output_dir = audio_path + song_name + '_Separated'
-output_dir = audio_path + 'training_data/' #vocals, instrumentals, mixes
 instrumentals_output_path = output_dir + 'instrumentals/'
 vocals_output_path = output_dir + 'vocals/'
 totals_output_path = output_dir + 'total_track/'
-
-# instrumentals_output_path = output_dir + '/instrumentals.wav'
-# vocals_output_path = output_dir + '/vocals.wav'
-# totals_output_path = output_dir + '/total_track.wav'
-
-# splits_dir = output_dir + '/splits'
-# vocal_splits_dir = splits_dir + '/vocals'
-# instrumental_splits_dir = splits_dir + '/instrumentals'
-# total_splits_dir = splits_dir + '/totals'
 
 # track length in milliseconds
 min_split_track_length = 3000
