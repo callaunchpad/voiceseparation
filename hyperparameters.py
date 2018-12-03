@@ -40,8 +40,8 @@ hparams = tf.contrib.training.HParams(
 	num_layers = 4,
 	layer_size = 200,
 	clip_gradient = 200,
-	num_fc_layers = 3,
-	fc_layer_size = 300,
+	num_fc_layers = 1,
+	fc_layer_size = 256,
 
 	# AE Parameters
 
