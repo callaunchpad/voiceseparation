@@ -14,6 +14,9 @@ hparams = tf.contrib.training.HParams(
 	# Data Parameters
 	# data_dir = "audio/",
 	data_dir = "MIR-1K/Wavfile/",
+	mix_dir = "/.audio/training_data/total_track",
+	voc_dir = "/.audio/training_data/vocals",
+	inst_dir = "/.audio/training_data/instrumentals",
 	val_split = 0.8,
 	max_input_snr = 5,
 
