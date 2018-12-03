@@ -72,6 +72,7 @@ def run_train(hparams, inputs, loss, train_op):
 			# Print loss per time step
 			if step % hparams.print_loss_frequency == 0:
 				print ('%d (%d %d%%) Loss: %.8f' % (time.time() - start, step, float(step) / hparams.max_steps * 100, raw_loss))
+			if step % hparams.train_loss_frequency == 0:
 				with open(hparams.log_file_train, 'a+') as f:
 					f.write('%d (%d %d%%) Loss: %.8f\n' % (time.time() - start, step, float(step) / hparams.max_steps * 100, raw_loss))
 

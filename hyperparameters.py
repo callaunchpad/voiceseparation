@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 FS = 16000
-TIME_LENGTH = 1
+TIME_LENGTH = 2
 FRAME_LENGTH = 512
 
 hparams = tf.contrib.training.HParams(
@@ -33,7 +33,7 @@ hparams = tf.contrib.training.HParams(
 	model_name = "RNN",
 
 	# RNN Parameters
-	use_lstm = False,
+	use_lstm = True,
 	num_layers = 4,
 	layer_size = 200,
 	clip_gradient = 200,
@@ -45,12 +45,13 @@ hparams = tf.contrib.training.HParams(
 
 	# Training Parameters
 	max_steps = int(2e6),
-	learning_rate = 10e-4,
+	learning_rate = 8e-4,
 	batch_size = 32,
-	optimizer_name = "RMSProp",
-	val_loss_frequency = 8,
+	optimizer_name = "Adam",
+	train_loss_frequency = 16,
+	val_loss_frequency = 32,
 
-	print_loss_frequency = 20,
+	print_loss_frequency = 16,
 	save_model_interval = 600,
 	save_dir = "checkpoints/",
 
