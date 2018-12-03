@@ -9,6 +9,12 @@ def preprocess_stft(hparams, waveform):
 		X_waveform = tf.log(X_waveform + hparams.magnitude_offset)
 	return X_waveform, P_waveform
 
+def postprocess_stft(hparams, X_waveform, P_waveform):
+	if hparams.use_log:
+		X_waveform = tf.exp(X_waveform) + hparams.magnitude_offset
+	STFT_waveform = tf.complex(X_waveform * tf.cos(P_waveform), X_waveform * tf.sin(P_waveform))
+	return istft(hparams, STFT_waveform)
+
 # Net related functions
 def make_rnn(hparams, X_mixture):
 	cells = []
@@ -102,7 +108,7 @@ def build_graph(hparams):
 	X_instrumentals_estimate = (tf.ones(output_mask.shape) - output_mask) * X_mixture
 
 	# Loss
-	loss = tf.reduce_mean(tf.square(X_vocals - X_vocals_estimate) + tf.square(X_instrumentals - X_instrumentals_estimate))
+	loss = tf.reduce_mean(tf.square(X_vocals - X_vocals_estimate))
 
 	# Optimization
 	global_step, learning_rate, train_op = create_optimizer(hparams, loss)

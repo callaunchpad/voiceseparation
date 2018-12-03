@@ -14,6 +14,9 @@ hparams = tf.contrib.training.HParams(
 	# Data Parameters
 	# data_dir = "audio/",
 	data_dir = "mir-1k/wavfile/",
+	mix_dir = "/.audio/training_data/total_track",
+	voc_dir = "/.audio/training_data/vocals",
+	inst_dir = "/.audio/training_data/instrumentals",
 	val_split = 0.8,
 	max_input_snr = 5,
 
@@ -37,8 +40,8 @@ hparams = tf.contrib.training.HParams(
 	num_layers = 4,
 	layer_size = 200,
 	clip_gradient = 200,
-	num_fc_layers = 3,
-	fc_layer_size = 300,
+	num_fc_layers = 1,
+	fc_layer_size = 256,
 
 	# AE Parameters
 
