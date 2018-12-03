@@ -39,7 +39,7 @@ def run_train(hparams, inputs, loss, train_op):
 	loader = Loader(hparams)
 
 	# Set config for GPU
-	config = tf.ConfigProto()
+	config = tf.ConfigProto(log_device_placement = True)
 	config.gpu_options.allow_growth = True
 
 	# Setup saver for saving checkpoints

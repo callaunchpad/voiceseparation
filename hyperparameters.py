@@ -13,7 +13,7 @@ hparams = tf.contrib.training.HParams(
 
 	# Data Parameters
 	# data_dir = "audio/",
-	data_dir = "MIR-1K/Wavfile/",
+	data_dir = "mir-1k/wavfile/",
 	val_split = 0.8,
 	max_input_snr = 5,
 
