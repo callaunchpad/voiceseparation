@@ -16,8 +16,11 @@ def simulate_mixture(hparams, vocals, instrumentals):
 	vocals = snr_to_weight(snrs[0]) * vocals
 	instrumentals = snr_to_weight(snrs[1]) * instrumentals
 
+	vocals = np.int16(vocals)
+	instrumentals = np.int16(instrumentals)
+
 	mixture = vocals + instrumentals
-	return mixture
+	return vocals, instrumentals, mixture
 
 class Loader(object):
 	def __init__(self, hparams):
@@ -48,13 +51,12 @@ class Loader(object):
 			start = np.random.randint(len(audio_arr) - self.hparams.waveform_size)
 			audio_arr = audio_arr[start:start+self.hparams.waveform_size]
 
-			vocals[b, :] = audio_arr[:, 1]
-			instrumentals[b, :] = audio_arr[:, 0]
-			mixture[b, :] = simulate_mixture(self.hparams, audio_arr[:, 1], audio_arr[:, 0])
+			vocals[b, :], instrumentals[b, :], mixture[b, :] = simulate_mixture(self.hparams, audio_arr[:, 1], audio_arr[:, 0])
 
 			data_names.append(audio_name)
 
 		return vocals, instrumentals, mixture, data_names
 
 
-		
+
+
