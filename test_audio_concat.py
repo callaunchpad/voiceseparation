@@ -28,8 +28,8 @@ totals_output_path = output_dir + 'total_track/'
 # total_splits_dir = splits_dir + '/totals'
 
 # track length in milliseconds
-min_split_track_length = 5000
-max_split_track_length = 15000
+min_split_track_length = 3000
+max_split_track_length = 5000
 
 for song in song_names:
     song_instrumentals_output_path = instrumentals_output_path + song + '_instrumentals.wav'
@@ -56,6 +56,19 @@ for song in song_names:
 
     totals_track = instrumentals_track.overlay(vocals_track)
 
+    #split the instrumentals, vocals, totals
+    split_times = [0]
+    total_time = 0
+    while total_time < max_duration:
+        time = np.random.rand(1)[0] * (max_split_track_length - min_split_track_length) + min_split_track_length
+        total_time += time
+        split_times.append(split_times[-1] + time)
+
+    split_instrumentals = [instrumentals_track[split_times[i - 1]:split_times[i]] for i in range(1, len(split_times))]
+    split_vocals = [vocals_track[split_times[i - 1]:split_times[i]] for i in range(1, len(split_times))]
+    split_totals = [totals_track[split_times[i - 1]:split_times[i]] for i in range(1, len(split_times))]
+
+    #create a totals, instr, and voc folder in /audio/training_data
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     if not os.path.exists(instrumentals_output_path):
@@ -65,30 +78,15 @@ for song in song_names:
     if not os.path.exists(totals_output_path):
         os.makedirs(totals_output_path)
 
-    with open(song_instrumentals_output_path, 'wb') as f:
-        instrumentals_track.export(f, format='wav')
-    with open(song_vocals_output_path, 'wb') as f:
-        vocals_track.export(f, format='wav')
-    with open(song_totals_output_path, 'wb') as f:
-        totals_track.export(f, format='wav')
-
-    # if not os.path.exists(splits_dir):
-    #     os.makedirs(splits_dir)
-    # if not os.path.exists(instrumental_splits_dir):
-    #     os.makedirs(instrumental_splits_dir)
-    # if not os.path.exists(vocal_splits_dir):
-    #     os.makedirs(vocal_splits_dir)
-    # if not os.path.exists(total_splits_dir):
-    #     os.makedirs(total_splits_dir)
-
-    # for i in range(len(split_totals)):
-    #     path = instrumental_splits_dir + '/' + song_name + '_instrumentals_' + str(i) + '_' + str(
-    #         len(split_instrumentals[i])) + '.wav'
-    #     with open(path, 'wb') as f:
-    #         split_instrumentals[i].export(f, format='wav')
-    #     path = vocal_splits_dir + '/' + song_name + '_vocals_' + str(i) + '_' + str(len(split_vocals[i])) + '.wav'
-    #     with open(path, 'wb') as f:
-    #         split_vocals[i].export(f, format='wav')
-    #     path = total_splits_dir + '/' + song_name + '_totals_' + str(i) + '_' + str(len(split_totals[i])) + '.wav'
-    #     with open(path, 'wb') as f:
-    #         split_totals[i].export(f, format='wav')
+    #export split audio clips
+    for i in range(len(split_totals)):
+        path = instrumentals_output_path + song + '_instrumentals_' + str(i) + '_' + str(
+            len(split_instrumentals[i])) + '.wav'
+        with open(path, 'wb') as f:
+            split_instrumentals[i].export(f, format='wav')
+        path = vocals_output_path + song + '_vocals_' + str(i) + '_' + str(len(split_vocals[i])) + '.wav'
+        with open(path, 'wb') as f:
+            split_vocals[i].export(f, format='wav')
+        path = totals_output_path + song + '_totals_' + str(i) + '_' + str(len(split_totals[i])) + '.wav'
+        with open(path, 'wb') as f:
+            split_totals[i].export(f, format='wav')
