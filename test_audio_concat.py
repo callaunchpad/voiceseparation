@@ -5,10 +5,11 @@ from os import listdir, makedirs
 from os.path import isfile, join
 
 audio_path = './audio/'
-song_names = listdir(audio_path)[1:] #list of directories of song names
-
+song_names = listdir(audio_path) #list of directories of song names
+print(song_names)
 vocal_keyword = 'vox'
 
+output_dir = audio_path + "training_data/"
 instrumentals_output_path = output_dir + 'instrumentals/'
 vocals_output_path = output_dir + 'vocals/'
 totals_output_path = output_dir + 'total_track/'
